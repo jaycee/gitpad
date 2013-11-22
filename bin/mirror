@@ -1,6 +1,9 @@
 #!/usr/bin/ruby
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}/../lib"
 
+require 'rubygems'
+require 'json'
+require 'open-uri'
 require 'repo'
 
 def timestamp
@@ -8,16 +11,23 @@ def timestamp
 end
 
 def master_repo_urls
-  #%w( lp:charms/mysql lp:charms/roundcube )
-  `charm list | grep lp:charms`.split
+  resp = open('http://manage.jujucharms.com/api/3/search?type=approved&series=precise')
+  results = JSON.parse(resp.read())['result']
+  repo_urls = []
+  results.each do |result|
+    charm = result['charm']
+    repo = {:name, charm['name'], :url, charm['code_source']['location']}
+    repo_urls.push(repo)
+  end
+  repo_urls
 end
 
 STDOUT.sync = true
 puts "mirror started at #{timestamp}"
 
-master_repo_urls.reverse.each do |master_url|
-  repo_name = master_url.gsub(/.*\//,"")
-
+master_repo_urls.reverse.each do |repo_url|
+  repo_name = repo_url[:name]
+  master_url = repo_url[:url]
   if ( repo_name =~ /juju-gui/ ) 
     puts "skipping juju-gui"
     next
@@ -32,7 +42,6 @@ master_repo_urls.reverse.each do |master_url|
   rescue => e
     puts "error mirroring repo #{master_url} to #{mirror_url}"
     puts "error: #{e}"
-    # keep going on the rest of the list
   end
 end
 
