@@ -23,8 +23,13 @@ def master_repo_urls
 end
 
 STDOUT.sync = true
-puts "mirror started at #{timestamp}"
 
+puts "setting up env"
+credentials = `cat ../.gitpad`.split
+ENV['GITHUB_USER'] = credentials[0]
+ENV['GITHUB_TOKEN'] = credentials[1]
+
+puts "mirror started at #{timestamp}"
 master_repo_urls.reverse.each do |repo_url|
   repo_name = repo_url[:name]
   master_url = repo_url[:url]

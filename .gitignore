@@ -3,3 +3,6 @@ projects/*
 *.log
 tmp/*
 etc/credentials.yml
+.gitpad
+.*.un~
+.*.swp
