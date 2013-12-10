@@ -25,7 +25,8 @@ end
 STDOUT.sync = true
 
 puts "setting up env"
-credentials = `cat ../.gitpad`.split
+CREDENTIALS_FILE = "#{File.dirname(__FILE__)}/../.gitpad"
+credentials = `cat #{CREDENTIALS_FILE}`.split
 ENV['GITHUB_USER'] = credentials[0]
 ENV['GITHUB_TOKEN'] = credentials[1]
 
