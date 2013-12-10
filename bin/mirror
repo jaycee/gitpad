@@ -16,7 +16,7 @@ def master_repo_urls
   repo_urls = []
   results.each do |result|
     charm = result['charm']
-    repo = {:name, charm['name'], :url, charm['code_source']['location']}
+    repo = {:name => charm['name'], :url => charm['code_source']['location']}
     repo_urls.push(repo)
   end
   repo_urls
